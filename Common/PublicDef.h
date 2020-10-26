@@ -205,13 +205,17 @@ enum TSn
     TS5
 };
 
-
-
-typedef struct Node
+enum MSG_TYPE
 {
-    int data;
-    struct Node *nextt;
-}Node;
+    MSG_Normal = 0,
+    MSG_Over,
+    MSG_Err,
+};
 
-typedef struct Node *LinkList; /*定义LinkList*/
+enum RETAIN_SWITCH
+{
+    RETAIN_First,
+    RETAIN_Second
+};
+
 #endif // PUBLICDEF_H

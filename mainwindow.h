@@ -27,7 +27,7 @@ public:
 private slots:
     void slotWFEM_HEADER(WFEM_HEADER oWfemHeader);
 
-    void updateMsg(QString oStrMsg);
+    void updateMsg(MSG_TYPE eType, QString oStrMsg);
 
     void on_actionOpenFile_triggered();
 
@@ -36,6 +36,8 @@ private slots:
     void on_actionConsult_triggered();
 
     void on_comboBoxAMTorMT_currentIndexChanged(int index);
+
+    void on_spinBoxSlot_valueChanged(int arg1);
 
 private:
     Ui::MainWindow *ui;

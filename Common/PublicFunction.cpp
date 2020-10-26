@@ -85,6 +85,10 @@ qint32 PublicFunction::getNumber(QByteArray baLine)
 
     QStringList aoStrLine = oStrLine.split(",", QString::SkipEmptyParts);
 
+    if(aoStrLine.isEmpty()){
+        return 0;
+    }
+
     QString oStrData  = aoStrLine.first();
 
     iData = oStrData.simplified().toInt();
@@ -92,6 +96,7 @@ qint32 PublicFunction::getNumber(QByteArray baLine)
     return iData;
 }
 
+/* 从凤凰Header中获取到时间 */
 QDateTime PublicFunction::getDateTime(PHOENIX_HEADER oHeader)
 {
     QDateTime oDateTime;
@@ -109,6 +114,7 @@ QDateTime PublicFunction::getDateTime(PHOENIX_HEADER oHeader)
     return oDateTime;
 }
 
+/* 更新哈时间 */
 PHOENIX_HEADER PublicFunction::getHeader(PHOENIX_HEADER oHeader, quint64 uiSecs)
 {
     QDateTime oDateTimeOld = getDateTime(oHeader);

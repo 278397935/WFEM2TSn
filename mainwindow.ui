@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>WFEM2TSn</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="rec.qrc">
+    <normaloff>:/new/prefix1/image/WFEM2TSn.ico</normaloff>:/new/prefix1/image/WFEM2TSn.ico</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
@@ -528,6 +532,8 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="rec.qrc"/>
+ </resources>
  <connections/>
 </ui>

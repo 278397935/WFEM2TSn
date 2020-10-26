@@ -9,6 +9,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     qDebugV0()<<QThread::currentThreadId();
 
+    /* 初始状态，转换按钮是不能按 */
+    ui->actionConvert->setEnabled(false);
 
     /* 方法 */
     mapMethod.insert(METHOD_CS, "连续采样");
@@ -43,12 +45,13 @@ MainWindow::MainWindow(QWidget *parent) :
     qRegisterMetaType<WFEM_HEADER>("WFEM_HEADER");
     qRegisterMetaType<AMTorMT>("AMTorMT");
     qRegisterMetaType<TSn>("TSn");
+    qRegisterMetaType<MSG_TYPE>("MSG_TYPE");
 
     poTSnWork = nullptr;
 
     poTSnWork = new TSnWork();
 
-    connect(poTSnWork, SIGNAL(sigMsg(QString)), this, SLOT(updateMsg(QString)));
+    connect(poTSnWork, SIGNAL(sigMsg(MSG_TYPE, QString)), this, SLOT(updateMsg(MSG_TYPE, QString)));
 
     connect(poTSnWork, SIGNAL(sigWFEM_HEADER(WFEM_HEADER)), this, SLOT(slotWFEM_HEADER(WFEM_HEADER)));
 
@@ -131,9 +134,25 @@ void MainWindow::LastDirWrite(QString oStrFileName)
     oFileLastDir.close();
 }
 
-void MainWindow::updateMsg(QString oStrMsg)
+void MainWindow::updateMsg(MSG_TYPE eType, QString oStrMsg)
 {
-    ui->textBrowser->append(oStrMsg);
+    switch (eType) {
+    case MSG_Normal:
+        ui->textBrowser->append(oStrMsg);
+        break;
+
+    case MSG_Err:;
+        QMessageBox::information(NULL, "错误", oStrMsg);
+        break;
+
+    case MSG_Over:
+        ui->textBrowser->append(oStrMsg);
+        ui->actionConvert->setEnabled(true);
+        break;
+
+    default:
+        break;
+    }
 }
 
 /* 收到CS的首行信息，header，显示在UI上供User查看和修改 */
@@ -147,7 +166,7 @@ void MainWindow::slotWFEM_HEADER(WFEM_HEADER oWfemHeader)
 
     QString oStrDateTime = oDateTime.toString("yyyy年MM月dd日 hh:mm:ss dddd");
 
-    this->updateMsg("\n开始采样时刻："+oStrDateTime+"\n");
+    this->updateMsg(MSG_Normal, "\n开始采样时刻："+oStrDateTime+"\n");
 
     oStrWfemHeader = QString("数据总长度：%1\n"
                              "任务名：%2\n"
@@ -213,7 +232,7 @@ void MainWindow::slotWFEM_HEADER(WFEM_HEADER oWfemHeader)
             .arg(oWfemHeader.uiXpf);
 
 
-    this->updateMsg(oStrWfemHeader);
+    this->updateMsg(MSG_Normal, oStrWfemHeader);
 
     /* Phoenix header */
     ui->tableWidget->setItem(0,3,new QTableWidgetItem(oStrDateTime));
@@ -259,10 +278,10 @@ void MainWindow::on_actionOpenFile_triggered()
 
     ui->textBrowser->clear();
 
-    this->updateMsg("打开文件：");
+    this->updateMsg(MSG_Normal, "打开文件：");
     for(int i = 0; i < CH_CNT; i++)
     {
-        this->updateMsg(QString("No.%1\u058E %2")
+        this->updateMsg(MSG_Normal, QString("No.%1\u058E %2")
                         .arg(i)
                         .arg(aoStrFileName.at(i)));
     }
@@ -279,7 +298,13 @@ void MainWindow::on_actionOpenFile_triggered()
     {
         QMessageBox::information(NULL, "警告", "选中的CS时间域文件，\n不属于同一参数文件。\n请重新选择！",
                                  QMessageBox::Yes );
+        ui->textBrowser->clear();
+
         return;
+    }
+    else
+    {
+        ui->actionConvert->setEnabled(true);
     }
 }
 
@@ -367,5 +392,10 @@ void MainWindow::on_comboBoxAMTorMT_currentIndexChanged(int index)
     }
 
     ui->comboBoxBand->addItems(aoStrItem);
+}
 
+/* 时间片段长度改变，则要重新限制每个片段内的记录数 */
+void MainWindow::on_spinBoxSlot_valueChanged(int arg1)
+{
+    ui->spinBoxRecord->setRange(1, arg1);
 }

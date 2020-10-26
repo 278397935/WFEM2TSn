@@ -20,8 +20,6 @@ public:
 
     void writeHeader(PHOENIX_HEADER oHeader);
 
-
-
     void writeScan();
 
     /* 空读，不做如何处理。只为满足Dr.Lee 的数据格式 */
@@ -30,8 +28,7 @@ public:
     /* AMT TS2， 间隔采样，只存0.1s */
     void writeTS2(quint64 uiSlotCnt);
 
-    /* AMT TS3 & MT TS3 、TS4 间隔采样，存1s */
-    void writeGap(quint64 uiSlotCnt);
+    void writeGap(quint64 uiSlotCnt, RETAIN_SWITCH eSwitch);
 
     /* AMT TS4 & MT TS5, 连续采集 */
     void writeNoGap();
@@ -50,14 +47,18 @@ private:
 
     QFile oFileCh1, oFileCh2, oFileCh3, oFileCh4, oFileCh5;
 
+    /* 从广域时间域文件中读取浮点数 */
+    qint32 iCh1, iCh2, iCh3, iCh4 ,iCh5;
+
 private slots:
     void convert(AMTorMT eAMTorMT, TSn eTSn, quint32 uiSlicBase, quint32 uiSlicSample);
 
-
 signals:
-    void sigMsg(QString oStrMsg);
+    void sigMsg(MSG_TYPE eType ,QString oStrMsg);
 
     void sigWFEM_HEADER(WFEM_HEADER oHeader);
+
+    void sigcompleted();
 
 };
 

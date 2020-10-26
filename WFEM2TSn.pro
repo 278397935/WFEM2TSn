@@ -26,3 +26,6 @@ HEADERS  += mainwindow.h \
     TSnWork.h
 
 FORMS    += mainwindow.ui
+
+RESOURCES += \
+    rec.qrc

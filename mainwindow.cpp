@@ -162,7 +162,7 @@ void MainWindow::slotWFEM_HEADER(WFEM_HEADER oWfemHeader)
     oStrWfemHeader.clear();
 
     /* 将 WFEM header 显示到 TextBrowser */
-    QDateTime oDateTime = PublicFunction::getDateTime(oWfemHeader.uiStartTime);
+    QDateTime oDateTime = PublicFunction::getDateTimeFromUTC(oWfemHeader.uiStartTime);
 
     QString oStrDateTime = oDateTime.toString("yyyy年MM月dd日 hh:mm:ss dddd");
 

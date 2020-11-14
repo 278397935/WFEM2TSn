@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="rec.qrc">
-    <normaloff>:/new/prefix1/image/WFEM2TSn.ico</normaloff>:/new/prefix1/image/WFEM2TSn.ico</iconset>
+    <normaloff>:/new/prefix1/image/logo.ico</normaloff>:/new/prefix1/image/logo.ico</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">

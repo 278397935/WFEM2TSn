@@ -175,7 +175,6 @@ typedef struct _PHOENIX_HEADER
     quint8  uiDayOfWeek;                    //6:     星期几 dayOfWeek
     quint8  uiCentury;                     //7:     世纪
 
-
     quint16 uiDevSN;                    //8~9:   盒子序列号（16位整数）
     quint16 uiSampleCntPerRecordPerCh; //10~11: 记录中scan的个数（16位整数）
     quint8  uiChCntPerScan;           //12:    每次scan的道数
@@ -210,12 +209,6 @@ enum MSG_TYPE
     MSG_Normal = 0,
     MSG_Over,
     MSG_Err,
-};
-
-enum RETAIN_SWITCH
-{
-    RETAIN_First,
-    RETAIN_Second
 };
 
 #endif // PUBLICDEF_H

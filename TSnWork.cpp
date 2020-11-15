@@ -196,7 +196,7 @@ void TSnWork::writeScan(quint64 uiCnt)
     }
 }
 
-/* QDataStream readLine() */
+/* QDataStream readLine() ， 空读，不做任何操作 */
 void TSnWork::readNothing(quint64 uiCnt)
 {   
     emit sigMsg(MSG_Normal, QString("跳%1行")
@@ -257,6 +257,7 @@ void TSnWork::writeAMT_TS2(quint64 uiSlotCnt)
     emit sigMsg(MSG_Over,"AMT TS2 间隔采样写入完毕！");
 }
 
+/* 间隔采样， 第一个片段丢弃，第二个片段留着指定的 L3NS record个数 */
 void TSnWork::writeAMT_TS3(quint64 uiSlotCnt)
 {
     /* 采样时间小于采样间隔， 错误！❌ */
@@ -296,6 +297,30 @@ void TSnWork::writeAMT_TS3(quint64 uiSlotCnt)
     emit sigMsg(MSG_Over, "AMT TS3 间隔采样写入完毕！");
 }
 
+/* 连续采样 */
+void TSnWork::writeAMT_TS4()
+{
+    for(int i = 0; i < goHeaderWFEM.uiSampleLength; i++)
+    {
+        /* 更新记录头的时间，写记录头 */
+        PHOENIX_HEADER oHeaderNew = PublicFunction::getHeaderFromAddSecs(goHeaderPhoenix, i);
+
+        /* 朝TSn文件中写phoenix 的 Header */
+        this->writeHeader(oHeaderNew);
+
+        this->writeScan(goHeaderPhoenix.uiSampleCntPerRecordPerCh);
+
+        emit sigMsg(MSG_Normal, QString("AMT TS4 连续采样\u058E%1/%2(写入记录数/总记录数)")
+                    .arg(i+1)
+                    .arg(goHeaderWFEM.uiSampleLength));
+    }
+
+    fclose(pFile);
+
+    emit sigMsg(MSG_Over,"AMT TS4 连续采样写入完毕！");
+}
+
+/* MT TS3 L3NS */
 void TSnWork::writeMT_TS3(quint64 uiSlotCnt)
 {
     /* 采样时间小于采样间隔， 错误！❌ */
@@ -356,10 +381,7 @@ void TSnWork::writeMT_TS4(quint64 uiSlotCnt)
                                                                              goHeaderWFEM.uiSlicBase*2*i + j);
 
             this->writeHeader(oHeaderNew);
-
-
             this->writeScan(goHeaderPhoenix.uiSampleCntPerRecordPerCh*0.1);
-
 
             emit sigMsg(MSG_Normal ,QString("间隔采样\u058E：%1/%2, %3/%4")
                         .arg(i/2+1)
@@ -374,6 +396,7 @@ void TSnWork::writeMT_TS4(quint64 uiSlotCnt)
     emit sigMsg(MSG_Over, "间隔采样写入完毕！");
 }
 
+/* 连续采样 */
 void TSnWork::writeMT_TS5()
 {
     for(int i = 0; i < goHeaderWFEM.uiSampleLength; i++)
@@ -426,29 +449,6 @@ void TSnWork::writeNum(double number)
 
     fwrite(buffer, BIT_WIDTH, 1, pFile);
 }
-
-void TSnWork::writeAMT_TS4()
-{
-    for(int i = 0; i < goHeaderWFEM.uiSampleLength; i++)
-    {
-        /* 更新记录头的时间，写记录头 */
-        PHOENIX_HEADER oHeaderNew = PublicFunction::getHeaderFromAddSecs(goHeaderPhoenix, i);
-
-        /* 朝TSn文件中写phoenix 的 Header */
-        this->writeHeader(oHeaderNew);
-
-        this->writeScan(goHeaderPhoenix.uiSampleCntPerRecordPerCh);
-
-        emit sigMsg(MSG_Normal, QString("AMT TS4 连续采样\u058E%1/%2(写入记录数/总记录数)")
-                    .arg(i+1)
-                    .arg(goHeaderWFEM.uiSampleLength));
-    }
-
-    fclose(pFile);
-
-    emit sigMsg(MSG_Over,"AMT TS4 连续采样写入完毕！");
-}
-
 
 /* 转换函数 */
 void TSnWork::convert(AMTorMT eAMTorMT, TSn eTSn, quint32 uiSlicBase, quint32 uiSlicSample)

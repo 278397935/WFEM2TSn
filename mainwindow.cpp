@@ -358,6 +358,7 @@ void MainWindow::on_actionConvert_triggered()
         break;
     }
 
+    /* 在界面上设置好的参数，传递给work thread */
     emit sigParameter(eAMTorMT, eTSn, ui->spinBoxSlot->value(), ui->spinBoxRecord->value());
 }
 

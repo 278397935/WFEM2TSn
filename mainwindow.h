@@ -58,12 +58,8 @@ private:
     /* Writes the last valid path to the configuration file. */
     void LastDirWrite(QString oStrFileName);
 
-
 signals:
-    void sigWFEM_HEADER(WFEM_HEADER oHeader);
-
     void sigParameter(AMTorMT eAMTorMT, TSn eTSn, quint32 uiSlicBase, quint32 uiSlicSample);
-
 };
 
 #endif // MAINWINDOW_H

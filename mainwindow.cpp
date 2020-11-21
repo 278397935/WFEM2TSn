@@ -42,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->on_comboBoxAMTorMT_currentIndexChanged(0);
 
     /* 注册 信号槽 传递 类型 */
-    qRegisterMetaType<WFEM_HEADER>("WFEM_HEADER");
+    qRegisterMetaType<HEAD_WFEM>("HEAD_WFEM");
     qRegisterMetaType<AMTorMT>("AMTorMT");
     qRegisterMetaType<TSn>("TSn");
     qRegisterMetaType<MSG_TYPE>("MSG_TYPE");
@@ -53,7 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(poTSnWork, SIGNAL(sigMsg(MSG_TYPE, QString)), this, SLOT(updateMsg(MSG_TYPE, QString)));
 
-    connect(poTSnWork, SIGNAL(sigWFEM_HEADER(WFEM_HEADER)), this, SLOT(slotWFEM_HEADER(WFEM_HEADER)));
+    connect(poTSnWork, SIGNAL(sigHEAD_WFEM(HEAD_WFEM)), this, SLOT(slotHEAD_WFEM(HEAD_WFEM)));
 
     connect(this, SIGNAL(sigParameter(AMTorMT,TSn,quint32, quint32)), poTSnWork, SLOT(convert(AMTorMT,TSn, quint32, quint32)));
 }
@@ -112,12 +112,12 @@ void MainWindow::LastDirWrite(QString oStrFileName)
 
     QDir oDir = oFileInfoLastDir.absoluteDir();
 
-    if( !oDir.cdUp() )
-    {
-        //qDebugV0()<<"After switching to the first level Dir:"<<oDir.absolutePath();
-        qDebugV0()<<"The previous directory of the current directory does not exist!";
-        return;
-    }
+//    if( !oDir.cdUp() )
+//    {
+//        //qDebugV0()<<"After switching to the first level Dir:"<<oDir.absolutePath();
+//        qDebugV0()<<"The previous directory of the current directory does not exist!";
+//        return;
+//    }
 
     QFile oFileLastDir(LASTDIR);
 
@@ -156,13 +156,13 @@ void MainWindow::updateMsg(MSG_TYPE eType, QString oStrMsg)
 }
 
 /* 收到CS的首行信息，header，显示在UI上供User查看和修改 */
-void MainWindow::slotWFEM_HEADER(WFEM_HEADER oWfemHeader)
+void MainWindow::slotHEAD_WFEM(HEAD_WFEM oHeadWFEM)
 {
     QString oStrWfemHeader;
     oStrWfemHeader.clear();
 
     /* 将 WFEM header 显示到 TextBrowser */
-    QDateTime oDateTime = PublicFunction::getDateTimeFromUTC(oWfemHeader.uiStartTime);
+    QDateTime oDateTime = PublicFunction::getDateTimeFromUTC(oHeadWFEM.uiStartTime);
 
     QString oStrDateTime = oDateTime.toString("yyyy年MM月dd日 hh:mm:ss dddd");
 
@@ -199,55 +199,64 @@ void MainWindow::slotWFEM_HEADER(WFEM_HEADER oWfemHeader)
                                                         "片段数目(间隔采样)：%29\n"
                                                         "数据格式：%30\n"
                                                         "高低频滤波：%31\n")
-            .arg(oWfemHeader.uiDataCnt)
-            .arg(oWfemHeader.oStrTaskName)
-            .arg(oWfemHeader.oStrIP)
-            .arg(oWfemHeader.oStrLineId)
-            .arg(oWfemHeader.oStrSiteId)
-            .arg(oWfemHeader.uiSiteDistance)
-            .arg(oWfemHeader.uiDevId)
-            .arg(oWfemHeader.uiDevCh)
-            .arg(mapV2M.value(oWfemHeader.uiV2M))
-            .arg(mapChopSW.value(oWfemHeader.uiChopSw))
-            .arg(oWfemHeader.oStrTag)
-            .arg(oWfemHeader.dPolar)
-            .arg(oWfemHeader.dAngle)
-            .arg(oWfemHeader.oStrSensorId)
-            .arg(mapMethod.value(oWfemHeader.uiMethod))
-            .arg(oWfemHeader.dLatitude)
-            .arg(oWfemHeader.dLongitude)
-            .arg(oWfemHeader.uiStartTime)
-            .arg(oWfemHeader.uiSampleLength)
-            .arg(oWfemHeader.uiFS)
-            .arg(oWfemHeader.uiPB_Type)
-            .arg(oWfemHeader.oStrSampleName)
-            .arg(oWfemHeader.uiFreqWave)
-            .arg(oWfemHeader.uiFreqGroup)
-            .arg(oWfemHeader.uiPeriodCnt)
-            .arg(oWfemHeader.uiWorkCnt)
-            .arg(oWfemHeader.uiGain)
-            .arg(oWfemHeader.uiSlicBase)
-            .arg(oWfemHeader.uiSliceSample)
-            .arg(mapFormat.value(oWfemHeader.uiFormat))
-            .arg(oWfemHeader.uiXpf);
+            .arg(oHeadWFEM.uiDataCnt)
+            .arg(oHeadWFEM.oStrTaskName)
+            .arg(oHeadWFEM.oStrIP)
+            .arg(oHeadWFEM.oStrLineId)
+            .arg(oHeadWFEM.oStrSiteId)
+            .arg(oHeadWFEM.uiSiteDistance)
+            .arg(oHeadWFEM.uiDevId)
+            .arg(oHeadWFEM.uiDevCh)
+            .arg(mapV2M.value(oHeadWFEM.uiV2M))
+            .arg(mapChopSW.value(oHeadWFEM.uiChopSw))
+            .arg(oHeadWFEM.oStrTag)
+            .arg(oHeadWFEM.dPolar)
+            .arg(oHeadWFEM.dAngle)
+            .arg(oHeadWFEM.oStrSensorId)
+            .arg(mapMethod.value(oHeadWFEM.uiMethod))
+            .arg(oHeadWFEM.dLatitude)
+            .arg(oHeadWFEM.dLongitude)
+            .arg(oHeadWFEM.uiStartTime)
+            .arg(oHeadWFEM.uiSampleLength)
+            .arg(oHeadWFEM.uiFS)
+            .arg(oHeadWFEM.uiPB_Type)
+            .arg(oHeadWFEM.oStrSampleName)
+            .arg(oHeadWFEM.uiFreqWave)
+            .arg(oHeadWFEM.uiFreqGroup)
+            .arg(oHeadWFEM.uiPeriodCnt)
+            .arg(oHeadWFEM.uiWorkCnt)
+            .arg(oHeadWFEM.uiGain)
+            .arg(oHeadWFEM.uiSlicBase)
+            .arg(oHeadWFEM.uiSliceSample)
+            .arg(mapFormat.value(oHeadWFEM.uiFormat))
+            .arg(oHeadWFEM.uiXpf);
 
 
     this->updateMsg(MSG_Normal, oStrWfemHeader);
 
     /* Phoenix header */
     ui->tableWidget->setItem(0,3,new QTableWidgetItem(oStrDateTime));
-    ui->tableWidget->setItem(1,3,new QTableWidgetItem(QString::number(oWfemHeader.uiDevId, 10)));
-    ui->tableWidget->setItem(2,3,new QTableWidgetItem(QString::number(oWfemHeader.uiFS, 10)));
-    ui->tableWidget->setItem(8,3,new QTableWidgetItem(QString::number(oWfemHeader.uiFS, 10)));
+    ui->tableWidget->setItem(1,3,new QTableWidgetItem(QString::number(oHeadWFEM.uiDevId, 10)));
+    ui->tableWidget->setItem(2,3,new QTableWidgetItem(QString::number(oHeadWFEM.uiFS, 10)));
+    ui->tableWidget->setItem(8,3,new QTableWidgetItem(QString::number(oHeadWFEM.uiFS, 10)));
 
     /* 内容自适应 */
     ui->tableWidget->resizeColumnsToContents();
 
-    /* Dr.Lee  设计，采样片段时长 */
-    ui->spinBoxSlot->setValue(oWfemHeader.uiSlicBase);
+    ui->spinBoxRecord->setValue(oHeadWFEM.uiSliceSample);
+    ui->spinBoxRecord->setRange(1, oHeadWFEM.uiSliceSample);
 
-    /* Dr.Lee  设计，采样记录个数*/
-    ui->spinBoxRecord->setValue(oWfemHeader.uiSliceSample);
+    ui->spinBoxSlot->setValue(oHeadWFEM.uiSlicBase);
+
+    if(oHeadWFEM.uiSlicBase == oHeadWFEM.uiSliceSample)
+    {
+        ui->spinBoxSlot->setEnabled(true);
+        ui->spinBoxSlot->setRange(1, oHeadWFEM.uiSlicBase);
+    }
+    else//广域间隔采样
+    {
+        ui->spinBoxSlot->setEnabled(false);
+    }
 }
 
 /* 打开文件*/
@@ -262,19 +271,21 @@ void MainWindow::on_actionOpenFile_triggered()
 
     if(aoStrFileName.isEmpty())
     {
-        QMessageBox::information(NULL, "警告", "未选中CS时间域文件！",
+        QMessageBox::information(nullptr, "警告", "未选中CS时间域文件！",
                                  QMessageBox::Yes );
         return;
     }
 
     if(aoStrFileName.count() != CH_CNT)
     {
-        QMessageBox::information(NULL, "警告",
+        QMessageBox::information(nullptr, "警告",
                                  QString("请选%1个同类型CS时间域文件！")
                                  .arg(CH_CNT),
                                  QMessageBox::Yes );
         return;
     }
+
+    this->LastDirWrite(aoStrFileName.first());
 
     ui->textBrowser->clear();
 

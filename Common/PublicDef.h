@@ -26,11 +26,11 @@
 #define BIT_WIDTH 3
 
 
-#define CH_1 1
-#define CH_2 2
-#define CH_3 3
-#define CH_4 4
-#define CH_5 5
+#define CH_Ex 1
+#define CH_Ey 2
+#define CH_Hx 4
+#define CH_Hy 5
+#define CH_Hz 6
 
 /* 广域 时间域数据 首行信息 枚举 */
 enum WFEM_HEADER_INDEX
@@ -42,7 +42,7 @@ enum WFEM_HEADER_INDEX
     WFEM_SITE,           //Site
     WFEM_SITE_DIST,      //Site distance
     WFEM_DEV,            //Dev ID
-    WFEM_CH,             // Channel ID
+    WFEM_CH,             //Channel ID
     WFEM_V2M,            //V2M or M2V
     WFEM_CHOP_SW,        //Chop switch
     WFEM_COMP_ID,        //Component
@@ -70,7 +70,7 @@ enum WFEM_HEADER_INDEX
 };
 
 /* 广域 时间域数据 首行信息 结构体 */
-struct WFEM_HEADER
+struct HEAD_WFEM
 {
     quint64 uiDataCnt;//WFEM_DATA_CNT,       //WFEM data count
     QString oStrTaskName;//WFEM_TASK_NAME,      //Task name
@@ -108,9 +108,7 @@ struct WFEM_HEADER
 
 
 /* 广域时间域的文件名和首行信息map上 */
-//QMap<QString, WFEM_HEADER> MapFileNameHeader;
-
-
+//QMap<QString, HEAD_WFEM> MapFileNameHeader;
 enum SAMP_METHOD {
     METHOD_CS,
     METHOD_WFEM,
@@ -164,7 +162,7 @@ typedef enum _BAND
 }BAND;
 
 /* Record format phoenix   list */
-typedef struct _PHOENIX_HEADER
+typedef struct _HEAD_PHOENIX
 {
     quint8  uiSec;                                //0:     秒
     quint8  uiMin;                               //1:     分
@@ -187,7 +185,7 @@ typedef struct _PHOENIX_HEADER
     quint8  uiClockStatus;     //21:    时钟状态
     qint32  iClockErr;        //22~25: 时钟误差（单位：微秒）
     char    acReserved[6];   //26~31: 保留（必须为0）
-}PHOENIX_HEADER;
+}HEAD_PHOENIX;
 
 
 enum AMTorMT

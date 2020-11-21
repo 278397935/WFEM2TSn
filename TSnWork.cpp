@@ -8,83 +8,89 @@ TSnWork::TSnWork(QObject *parent) : QObject(parent)
     poThread->start();
 
     pFile = nullptr;
+
+    uiSlicCnt = 0;
+
+    uiSkipSecs = 0;
+
+    uiAddSecs = 0;
 }
 
 /* 生成 5 个文件，广域时间域文件 */
 void TSnWork::openFiles()
 {
-    /* CH1 */
-    oFileCh1.setFileName(mapChFile.value(CH_1));
-    oStreamCh1.setDevice(&oFileCh1);
-    if(!oFileCh1.open(QIODevice::ReadOnly | QIODevice::Text)){
-        emit sigMsg(MSG_Normal, "Can't open Ch1 file:"+oFileCh1.errorString());
+    /* Ex */
+    oFileEx.setFileName(mapChFile.value(CH_Ex));
+    oStreamEx.setDevice(&oFileEx);
+    if(!oFileEx.open(QIODevice::ReadOnly | QIODevice::Text)){
+        emit sigMsg(MSG_Normal, "Can't open Ex file:"+oFileEx.errorString());
     }else{
-        oStreamCh1.setDevice(&oFileCh1);
-        oStreamCh1.setCodec("utf-8");
+        oStreamEx.setDevice(&oFileEx);
+        oStreamEx.setCodec("utf-8");
     }
 
-    /* CH2 */
-    oFileCh2.setFileName(mapChFile.value(CH_2));
-    oStreamCh2.setDevice(&oFileCh2);
-    if(!oFileCh2.open(QIODevice::ReadOnly | QIODevice::Text)){
-        emit sigMsg(MSG_Normal, "Can't open Ch2 file:"+oFileCh2.errorString());
+    /* Ey */
+    oFileEy.setFileName(mapChFile.value(CH_Ey));
+    oStreamEy.setDevice(&oFileEy);
+    if(!oFileEy.open(QIODevice::ReadOnly | QIODevice::Text)){
+        emit sigMsg(MSG_Normal, "Can't open Ey file:"+oFileEy.errorString());
     }else{
-        oStreamCh2.setDevice(&oFileCh2);
-        oStreamCh2.setCodec("utf-8");
+        oStreamEy.setDevice(&oFileEy);
+        oStreamEy.setCodec("utf-8");
     }
 
-    /* CH3 */
-    oFileCh3.setFileName(mapChFile.value(CH_3));
-    oStreamCh3.setDevice(&oFileCh3);
-    if(!oFileCh3.open(QIODevice::ReadOnly | QIODevice::Text)){
-        emit sigMsg(MSG_Normal, "Can't open Ch3 file:"+oFileCh3.errorString());
+    /* Hx */
+    oFileHx.setFileName(mapChFile.value(CH_Hx));
+    oStreamHx.setDevice(&oFileHx);
+    if(!oFileHx.open(QIODevice::ReadOnly | QIODevice::Text)){
+        emit sigMsg(MSG_Normal, "Can't open Hx file:"+oFileHx.errorString());
     }else{
-        oStreamCh3.setDevice(&oFileCh3);
-        oStreamCh3.setCodec("utf-8");
+        oStreamHx.setDevice(&oFileHx);
+        oStreamHx.setCodec("utf-8");
     }
 
-    /* CH4 */
-    oFileCh4.setFileName(mapChFile.value(CH_4));
-    oStreamCh4.setDevice(&oFileCh4);
-    if(!oFileCh4.open(QIODevice::ReadOnly | QIODevice::Text)){
-        emit sigMsg(MSG_Normal, "Can't open the file:"+oFileCh4.errorString());
+    /* Hy */
+    oFileHy.setFileName(mapChFile.value(CH_Hy));
+    oStreamHy.setDevice(&oFileHy);
+    if(!oFileHy.open(QIODevice::ReadOnly | QIODevice::Text)){
+        emit sigMsg(MSG_Normal, "Can't open Hy file:"+oFileHy.errorString());
     }else{
-        oStreamCh4.setDevice(&oFileCh4);
-        oStreamCh4.setCodec("utf-8");
+        oStreamHy.setDevice(&oFileHy);
+        oStreamHy.setCodec("utf-8");
     }
 
-    /* CH5 */
-    oFileCh5.setFileName(mapChFile.value(CH_5));
-    oStreamCh5.setDevice(&oFileCh5);
-    if(!oFileCh5.open(QIODevice::ReadOnly | QIODevice::Text)){
-        emit sigMsg(MSG_Normal, "Can't open the file:"+oFileCh1.errorString());
+    /* Hz */
+    oFileHz.setFileName(mapChFile.value(CH_Hz));
+    oStreamHz.setDevice(&oFileHz);
+    if(!oFileHz.open(QIODevice::ReadOnly | QIODevice::Text)){
+        emit sigMsg(MSG_Normal, "Can't open Hz file:"+oFileHz.errorString());
     }else{
-        oStreamCh5.setDevice(&oFileCh5);
-        oStreamCh5.setCodec("utf-8");
+        oStreamHz.setDevice(&oFileHz);
+        oStreamHz.setCodec("utf-8");
     }
 
     /* 首行读取出来，发个UI 显示 */
-    emit sigMsg(MSG_Normal,"首行信息 Ch1："+  oStreamCh1.readLine());
-    emit sigMsg(MSG_Normal,"首行信息 Ch2："+  oStreamCh2.readLine());
-    emit sigMsg(MSG_Normal,"首行信息 Ch3："+  oStreamCh3.readLine());
-    emit sigMsg(MSG_Normal,"首行信息 Ch4："+  oStreamCh4.readLine());
-    emit sigMsg(MSG_Normal,"首行信息 Ch5："+  oStreamCh5.readLine());
+    emit sigMsg(MSG_Normal,"首行信息 Ch1："+  oStreamEx.readLine());
+    emit sigMsg(MSG_Normal,"首行信息 Ch2："+  oStreamEy.readLine());
+    emit sigMsg(MSG_Normal,"首行信息 Ch3："+  oStreamHx.readLine());
+    emit sigMsg(MSG_Normal,"首行信息 Ch4："+  oStreamHy.readLine());
+    emit sigMsg(MSG_Normal,"首行信息 Ch5："+  oStreamHz.readLine());
 }
 
 /* 5个通道的数据文件全部关闭 */
 void TSnWork::closeFile()
 {
-    oFileCh1.flush();
-    oFileCh2.flush();
-    oFileCh3.flush();
-    oFileCh4.flush();
-    oFileCh5.flush();
+    oFileEx.flush();
+    oFileEy.flush();
+    oFileHx.flush();
+    oFileHy.flush();
+    oFileHz.flush();
 
-    oFileCh1.close();
-    oFileCh2.close();
-    oFileCh3.close();
-    oFileCh4.close();
-    oFileCh5.close();
+    oFileEx.close();
+    oFileEy.close();
+    oFileHx.close();
+    oFileHy.close();
+    oFileHz.close();
 }
 
 /* 判断， 所选的文件是不是
@@ -106,9 +112,9 @@ bool TSnWork::judgeKind(QStringList aoStrFileName)
     {
         goHeaderWFEM = PublicFunction::getHeaderFromFileName(oStrFileName);
 
-        goHeaderPhoenix = PublicFunction::getHeaderFromHeaderWFEM(goHeaderWFEM);
+        goHeadPhoenix = PublicFunction::getHeaderFromHeaderWFEM(goHeaderWFEM);
 
-        emit sigWFEM_HEADER(goHeaderWFEM);
+        emit sigHEAD_WFEM(goHeaderWFEM);
 
         mapChFile.insert(goHeaderWFEM.uiDevCh, oStrFileName);
 
@@ -138,158 +144,158 @@ bool TSnWork::judgeKind(QStringList aoStrFileName)
 }
 
 /* 写Phoenix记录头 */
-void TSnWork::writeHeader(PHOENIX_HEADER oHeader)
+void TSnWork::writeHeader()
 {
-    fwrite(&oHeader.uiSec,1, 1, pFile);
-    fwrite(&oHeader.uiMin,1, 1, pFile);
-    fwrite(&oHeader.uiHour,1, 1,pFile);
-    fwrite(&oHeader.uiDay,1, 1, pFile);
-    fwrite(&oHeader.uiMonth,1, 1, pFile);
-    fwrite(&oHeader.uiYear,1, 1, pFile);
-    fwrite(&oHeader.uiDayOfWeek,1, 1, pFile);
-    fwrite(&oHeader.uiCentury,1, 1, pFile);
+    fwrite(&goHeadPhoenix.uiSec,1, 1, pFile);
+    fwrite(&goHeadPhoenix.uiMin,1, 1, pFile);
+    fwrite(&goHeadPhoenix.uiHour,1, 1,pFile);
+    fwrite(&goHeadPhoenix.uiDay,1, 1, pFile);
+    fwrite(&goHeadPhoenix.uiMonth,1, 1, pFile);
+    fwrite(&goHeadPhoenix.uiYear,1, 1, pFile);
+    fwrite(&goHeadPhoenix.uiDayOfWeek,1, 1, pFile);
+    fwrite(&goHeadPhoenix.uiCentury,1, 1, pFile);
 
-    fwrite(&oHeader.uiDevSN,2, 1, pFile);
-    fwrite(&oHeader.uiSampleCntPerRecordPerCh,2, 1, pFile);
-    fwrite(&oHeader.uiChCntPerScan,1, 1, pFile);
-    fwrite(&oHeader.uiRecoedHeaderLength,1, 1, pFile);
-    fwrite(&oHeader.uiRecStatus,1, 1, pFile);
-    fwrite(&oHeader.uiBitSaturationCode,2, 1, pFile);
-    fwrite(&oHeader.uiBitWidth,1, 1, pFile);
-    fwrite(&oHeader.uiFS,2, 1, pFile);
-    fwrite(&oHeader.uiFSUnit,1, 1, pFile);
-    fwrite(&oHeader.uiClockStatus,1, 1, pFile);
+    fwrite(&goHeadPhoenix.uiDevSN,2, 1, pFile);
+    fwrite(&goHeadPhoenix.uiSampleCntPerRecordPerCh,2, 1, pFile);
+    fwrite(&goHeadPhoenix.uiChCntPerScan,1, 1, pFile);
+    fwrite(&goHeadPhoenix.uiRecoedHeaderLength,1, 1, pFile);
+    fwrite(&goHeadPhoenix.uiRecStatus,1, 1, pFile);
+    fwrite(&goHeadPhoenix.uiBitSaturationCode,2, 1, pFile);
+    fwrite(&goHeadPhoenix.uiBitWidth,1, 1, pFile);
+    fwrite(&goHeadPhoenix.uiFS,2, 1, pFile);
+    fwrite(&goHeadPhoenix.uiFSUnit,1, 1, pFile);
+    fwrite(&goHeadPhoenix.uiClockStatus,1, 1, pFile);
 
-    fwrite(&oHeader.iClockErr,4, 1, pFile);
+    fwrite(&goHeadPhoenix.iClockErr,4, 1, pFile);
 
-    fwrite(oHeader.acReserved, 6, 1, pFile);
+    fwrite(goHeadPhoenix.acReserved, 6, 1, pFile);
 
     QString oStrPhoenixHeader = QString("%1世纪   %2/%3/%4/ %5:%6:%7 星期%8")
-            .arg(oHeader.uiCentury)
-            .arg(oHeader.uiYear)
-            .arg(oHeader.uiMonth)
-            .arg(oHeader.uiDay)
-            .arg(oHeader.uiHour)
-            .arg(oHeader.uiMin)
-            .arg(oHeader.uiSec)
-            .arg(oHeader.uiDayOfWeek);
+            .arg(goHeadPhoenix.uiCentury)
+            .arg(goHeadPhoenix.uiYear)
+            .arg(goHeadPhoenix.uiMonth)
+            .arg(goHeadPhoenix.uiDay)
+            .arg(goHeadPhoenix.uiHour)
+            .arg(goHeadPhoenix.uiMin)
+            .arg(goHeadPhoenix.uiSec)
+            .arg(goHeadPhoenix.uiDayOfWeek);
 
-    //emit sigMsg(MSG_Normal, "写Phoenix记录头时间: \n"+oStrPhoenixHeader);
-
-    qDebugV0()<<"写Phoenix记录头时间: "+oStrPhoenixHeader;
+    emit sigMsg(MSG_Normal, "写Phoenix记录头时间: "+ oStrPhoenixHeader);
 }
 
 /* 写32位的有符号整数 */
 void TSnWork::writeScan(quint64 uiCnt)
 {
-    emit sigMsg(MSG_Normal, QString("写%1行")
+    emit sigMsg(MSG_Normal, QString("写%1个数据")
                 .arg(uiCnt));
 
     /* 从广域时间域文件中读取浮点数 */
     for(quint64 i = 0; i < uiCnt; i++)
     {
-        this->writeNum(PublicFunction::getNumber(oStreamCh1.readLine()));
-        this->writeNum(PublicFunction::getNumber(oStreamCh2.readLine()));
-        this->writeNum(PublicFunction::getNumber(oStreamCh3.readLine()));
-        this->writeNum(PublicFunction::getNumber(oStreamCh4.readLine()));
-        this->writeNum(PublicFunction::getNumber(oStreamCh5.readLine()));
+        this->writeNum(PublicFunction::getNumber(oStreamEx.readLine()));
+        this->writeNum(PublicFunction::getNumber(oStreamEy.readLine()));
+        this->writeNum(PublicFunction::getNumber(oStreamHx.readLine()));
+        this->writeNum(PublicFunction::getNumber(oStreamHy.readLine()));
+        this->writeNum(PublicFunction::getNumber(oStreamHz.readLine()));
     }
 }
 
 /* QDataStream readLine() ， 空读，不做任何操作 */
-void TSnWork::readNothing(quint64 uiCnt)
-{   
-    emit sigMsg(MSG_Normal, QString("跳%1行")
+void TSnWork::skipRows(quint64 uiCnt)
+{
+    emit sigMsg(MSG_Normal, QString("弃%1个数据")
                 .arg(uiCnt));
 
-    for(quint64 i = 0; i < uiCnt; i++)
+    for(quint64 i = 0; i <uiCnt; i++)
     {
         /* 从广域时间域文件中读取浮点数 */
-        oStreamCh1.readLine();
-        oStreamCh2.readLine();
-        oStreamCh3.readLine();
-        oStreamCh4.readLine();
-        oStreamCh5.readLine();
+        oStreamEx.readLine();
+        oStreamEy.readLine();
+        oStreamHx.readLine();
+        oStreamHy.readLine();
+        oStreamHz.readLine();
     }
 }
 
 /* AMT TS2， 间隔采样，只存0.1s */
-void TSnWork::writeAMT_TS2(quint64 uiSlotCnt)
+void TSnWork::writeAMT_TS2(quint32 uiHSMP, quint32 uiL2NS)
 {
-    /* 采样时间小于采样间隔， 错误！❌ */
-    if(goHeaderWFEM.uiSampleLength <goHeaderWFEM.uiSlicBase)
+    /* 区别对待广域设备连续采集和间隔采集 */
+    if(goHeaderWFEM.uiSlicBase == goHeaderWFEM.uiSliceSample)
     {
-        emit sigMsg(MSG_Err, "❌,采样间隔比采样时间长！");
-        return;
+        uiSlicCnt = goHeaderWFEM.uiDataCnt/uiHSMP/goHeaderWFEM.uiFS/2;
+        uiSkipSecs = 2*uiHSMP - uiL2NS ;
+        uiAddSecs =  2*uiHSMP - uiL2NS;
     }
-    /* 第一段留着，第二段舍弃 */
-    for(int i = 0; i < uiSlotCnt; i++)
+    else
     {
-        /* 偶数、奇数 */
-        if(i%2 == 0)
-        {
-            for(int j = 0; j <  goHeaderWFEM.uiSliceSample; j++)
-            {
-                PHOENIX_HEADER oHeaderNew = PublicFunction::getHeaderFromAddSecs(goHeaderPhoenix,
-                                                                                 goHeaderWFEM.uiSlicBase*i + j);
-
-                this->writeHeader(oHeaderNew);
-
-                /* 写0.1 跳0.9，保证1s的数据掠过去了 */
-                this->writeScan(goHeaderPhoenix.uiFS*0.1);
-                this->readNothing(goHeaderWFEM.uiFS*0.9);
-            }
-            /* 保留的那个片段，要舍弃 */
-            this->readNothing(goHeaderWFEM.uiSlicBase*goHeaderWFEM.uiFS -
-                              goHeaderWFEM.uiSliceSample*goHeaderWFEM.uiFS);
-        }
-        else
-        {
-            this->readNothing(goHeaderWFEM.uiSliceSample);
-        }
-
-        emit sigMsg(MSG_Normal,QString("AMT TS2 间隔采样\u058E %1/%2")
-                    .arg(i+1)
-                    .arg(uiSlotCnt));
+        uiSlicCnt = goHeaderWFEM.uiDataCnt/goHeaderWFEM.uiSliceSample/goHeaderWFEM.uiFS/2;
+        uiSkipSecs = 2*goHeaderWFEM.uiSliceSample - uiL2NS;
+        uiAddSecs =  2*goHeaderWFEM.uiSlicBase - uiL2NS ;
     }
 
+    for(quint64 i = 0; i < uiSlicCnt; i++)
+    {
+        for(quint32 j = 0; j < uiL2NS; j++)
+        {
+            this->writeHeader();
+
+            this->writeScan( goHeaderWFEM.uiFS/10 );
+            this->skipRows( goHeaderWFEM.uiFS - goHeaderWFEM.uiFS/10 );
+
+            this->updateHeadPhoenix( 1 );
+
+            emit sigMsg(MSG_Normal, QString("AMT TS2 间隔采样，记录: %1/%2\u058E片段: %3/%4 \n")
+                        .arg(j+1)
+                        .arg(uiL2NS)
+                        .arg(i+1)
+                        .arg(uiSlicCnt));
+        }
+        this->skipRows( goHeaderWFEM.uiFS*uiSkipSecs );
+        this->updateHeadPhoenix( uiAddSecs );
+    }
+
+    fflush(pFile);
     fclose(pFile);
-    emit sigMsg(MSG_Over,"AMT TS2 间隔采样写入完毕！");
+
+    emit sigMsg(MSG_Over, "AMT TS2 间隔采样写入完毕！");
 }
 
 /* 间隔采样， 第一个片段丢弃，第二个片段留着指定的 L3NS record个数 */
-void TSnWork::writeAMT_TS3(quint64 uiSlotCnt)
+void TSnWork::writeAMT_TS3(quint32 uiHSMP, quint32 uiL3NS)
 {
-    /* 采样时间小于采样间隔， 错误！❌ */
-    if(goHeaderWFEM.uiSampleLength <goHeaderWFEM.uiSlicBase)
+        /* 区别对待广域设备连续采集和间隔采集 */
+    if(goHeaderWFEM.uiSlicBase == goHeaderWFEM.uiSliceSample)
     {
-        emit sigMsg(MSG_Err, "❌,采样间隔比采样时间长！");
-        return;
+        uiSlicCnt = goHeaderWFEM.uiDataCnt/uiHSMP/goHeaderWFEM.uiFS/2;
+        uiSkipSecs = 2*uiHSMP - uiL3NS ;
+        uiAddSecs =  2*uiHSMP - uiL3NS;
+    }
+    else
+    {
+        uiSlicCnt = goHeaderWFEM.uiDataCnt/goHeaderWFEM.uiSliceSample/goHeaderWFEM.uiFS/2;
+        uiSkipSecs = 2*goHeaderWFEM.uiSliceSample - uiL3NS;
+        uiAddSecs =  2*goHeaderWFEM.uiSlicBase - uiL3NS ;
     }
 
-    for(int i = 0; i < uiSlotCnt; i++)
+    for(quint64 i = 0; i < uiSlicCnt; i++)
     {
-        if(i%2 == 0)//第一片，skip!
+        for(quint32 j = 0; j < uiL3NS; j++)
         {
-            this->readNothing(goHeaderWFEM.uiSlicBase*goHeaderWFEM.uiFS);
+            this->writeHeader();
+
+            this->writeScan( goHeaderWFEM.uiFS );
+
+            this->updateHeadPhoenix( 1 );
+
+            emit sigMsg(MSG_Normal, QString("AMT TS3 间隔采样，记录：%1/%2\u058E片段: %3/%4 \n")
+                        .arg(j+1)
+                        .arg(uiL3NS)
+                        .arg(i+1)
+                        .arg(uiSlicCnt));
         }
-        else//第二片，write
-        {
-            /* 记录 */
-            for(int j = 0; j < goHeaderWFEM.uiSliceSample; j++)
-            {
-                PHOENIX_HEADER oHeaderNew = PublicFunction::getHeaderFromAddSecs(goHeaderPhoenix,
-                                                                                 goHeaderWFEM.uiSlicBase*i+j);
-
-                this->writeHeader(oHeaderNew);
-                this->writeScan(goHeaderPhoenix.uiFS);
-            }
-
-            this->readNothing(goHeaderWFEM.uiSlicBase*goHeaderWFEM.uiFS -
-                              goHeaderWFEM.uiSliceSample*goHeaderWFEM.uiFS);
-        }
-
-        emit sigMsg(MSG_Normal, "=====\n");
+        this->skipRows( goHeaderWFEM.uiFS*uiSkipSecs );
+        this->updateHeadPhoenix( uiAddSecs );
     }
 
     fclose(pFile);
@@ -300,19 +306,19 @@ void TSnWork::writeAMT_TS3(quint64 uiSlotCnt)
 /* 连续采样 */
 void TSnWork::writeAMT_TS4()
 {
-    for(int i = 0; i < goHeaderWFEM.uiSampleLength; i++)
+    quint64 uiSamplingTimeLength = goHeaderWFEM.uiDataCnt/goHeaderWFEM.uiFS;
+
+    for(quint64 i = 0; i < uiSamplingTimeLength; i++)
     {
-        /* 更新记录头的时间，写记录头 */
-        PHOENIX_HEADER oHeaderNew = PublicFunction::getHeaderFromAddSecs(goHeaderPhoenix, i);
-
         /* 朝TSn文件中写phoenix 的 Header */
-        this->writeHeader(oHeaderNew);
+        this->writeHeader();
 
-        this->writeScan(goHeaderPhoenix.uiSampleCntPerRecordPerCh);
+        this->writeScan( goHeaderWFEM.uiFS );
+        this->updateHeadPhoenix(1);
 
         emit sigMsg(MSG_Normal, QString("AMT TS4 连续采样\u058E%1/%2(写入记录数/总记录数)")
                     .arg(i+1)
-                    .arg(goHeaderWFEM.uiSampleLength));
+                    .arg(uiSamplingTimeLength));
     }
 
     fclose(pFile);
@@ -321,38 +327,38 @@ void TSnWork::writeAMT_TS4()
 }
 
 /* MT TS3 L3NS */
-void TSnWork::writeMT_TS3(quint64 uiSlotCnt)
+void TSnWork::writeMT_TS3(quint32 uiHSMP, quint32 uiL3NS)
 {
-    /* 采样时间小于采样间隔， 错误！❌ */
-    if(goHeaderWFEM.uiSampleLength <goHeaderWFEM.uiSlicBase)
+       /* 区别对待广域设备连续采集和间隔采集 */
+    if(goHeaderWFEM.uiSlicBase == goHeaderWFEM.uiSliceSample)
     {
-        emit sigMsg(MSG_Err, "❌,采样间隔比采样时间长！");
-        return;
+        uiSlicCnt = goHeaderWFEM.uiDataCnt/uiHSMP/goHeaderWFEM.uiFS/2;
+        uiSkipSecs = 2*uiHSMP - uiL3NS ;
+        uiAddSecs =  2*uiHSMP - uiL3NS;
+    }
+    else
+    {
+        uiSlicCnt = goHeaderWFEM.uiDataCnt/goHeaderWFEM.uiSliceSample/goHeaderWFEM.uiFS/2;
+        uiSkipSecs = 2*goHeaderWFEM.uiSliceSample - uiL3NS;
+        uiAddSecs =  2*goHeaderWFEM.uiSlicBase - uiL3NS ;
     }
 
-    for(int i = 0; i < uiSlotCnt; i++)
+    for(quint64 i = 0; i < uiSlicCnt; i++)
     {
-        if(i%2 == 0)//第一片，skip!
+        for(quint32 j = 0; j < uiL3NS; j++)
         {
-            this->readNothing(goHeaderWFEM.uiSlicBase*goHeaderWFEM.uiFS);
+            this->writeHeader();
+            this->writeScan( goHeaderWFEM.uiFS );
+            this->updateHeadPhoenix( 1 );
+
+            emit sigMsg(MSG_Normal, QString("MT TS3 间隔采样，记录： %1/%2\u058E片段: %3/%4\n")
+                        .arg(j+1)
+                        .arg(uiL3NS)
+                        .arg(i+1)
+                        .arg(uiSlicCnt));
         }
-        else//第二片，write
-        {
-            /* 记录 */
-            for(int j = 0; j < goHeaderWFEM.uiSliceSample; j++)
-            {
-                PHOENIX_HEADER oHeaderNew = PublicFunction::getHeaderFromAddSecs(goHeaderPhoenix,
-                                                                                 goHeaderWFEM.uiSlicBase*i+j);
-
-                this->writeHeader(oHeaderNew);
-                this->writeScan(goHeaderPhoenix.uiFS);
-            }
-
-            this->readNothing(goHeaderWFEM.uiSlicBase*goHeaderWFEM.uiFS -
-                              goHeaderWFEM.uiSliceSample*goHeaderWFEM.uiFS);
-        }
-
-        emit sigMsg(MSG_Normal, "=====\n");
+        this->skipRows( goHeaderWFEM.uiFS*uiSkipSecs );
+        this->updateHeadPhoenix( uiAddSecs );
     }
 
     fclose(pFile);
@@ -360,58 +366,61 @@ void TSnWork::writeMT_TS3(quint64 uiSlotCnt)
     emit sigMsg(MSG_Over, "MT TS3 间隔采样写入完毕！");
 }
 
-void TSnWork::writeMT_TS4(quint64 uiSlotCnt)
+/* MT TS4 L4NS */
+void TSnWork::writeMT_TS4(quint32 uiHSMP, quint32 uiL4NS)
 {
-    /* 采样时间小于采样间隔， 错误！❌ */
-    if(goHeaderWFEM.uiSampleLength <goHeaderWFEM.uiSlicBase)
+       /* 区别对待广域设备连续采集和间隔采集 */
+    if(goHeaderWFEM.uiSlicBase == goHeaderWFEM.uiSliceSample)
     {
-        emit sigMsg(MSG_Err, "❌,采样间隔比采样时间长！");
-        return;
+        uiSlicCnt = goHeaderWFEM.uiDataCnt/uiHSMP/goHeaderWFEM.uiFS/2;
+        uiSkipSecs = 2*uiHSMP - uiL4NS ;
+        uiAddSecs =  2*uiHSMP - uiL4NS;
+    }
+    else
+    {
+        uiSlicCnt = goHeaderWFEM.uiDataCnt/goHeaderWFEM.uiSliceSample/goHeaderWFEM.uiFS/2;
+        uiSkipSecs = 2*goHeaderWFEM.uiSliceSample - uiL4NS;
+        uiAddSecs =  2*goHeaderWFEM.uiSlicBase - uiL4NS ;
     }
 
-    for(int i = 0; i < uiSlotCnt; i++)
+    for(quint64 i = 0; i < uiSlicCnt; i++)
     {
-        this->readNothing(goHeaderWFEM.uiSliceSample);
-
-        /* 奇数个slot，读进去指定的n个记录 */
-        for(int j = 0; j < goHeaderWFEM.uiSliceSample; j++)
+        for(quint32 j = 0; j < uiL4NS; j++)
         {
-            /* 更新记录头的时间，写记录头 */
-            PHOENIX_HEADER oHeaderNew = PublicFunction::getHeaderFromAddSecs(goHeaderPhoenix,
-                                                                             goHeaderWFEM.uiSlicBase*2*i + j);
+            this->writeHeader();
+            this->writeScan( goHeaderWFEM.uiFS );
+            this->updateHeadPhoenix( 1 );
 
-            this->writeHeader(oHeaderNew);
-            this->writeScan(goHeaderPhoenix.uiSampleCntPerRecordPerCh*0.1);
-
-            emit sigMsg(MSG_Normal ,QString("间隔采样\u058E：%1/%2, %3/%4")
-                        .arg(i/2+1)
-                        .arg(uiSlotCnt/2)
-                        .arg(j)
-                        .arg(goHeaderWFEM.uiSliceSample));
+            emit sigMsg(MSG_Normal, QString("AMT TS2 间隔采样，记录： %1/%2\u058E片段：%1/%2\n")
+                        .arg(j+1)
+                        .arg(uiL4NS)
+                        .arg(i+1)
+                        .arg(uiSlicCnt));
         }
+        this->skipRows( goHeaderWFEM.uiFS*uiSkipSecs );
+        this->updateHeadPhoenix( uiAddSecs );
     }
 
     fclose(pFile);
 
-    emit sigMsg(MSG_Over, "间隔采样写入完毕！");
+    emit sigMsg(MSG_Over, "AMT TS2 间隔采样写入完毕！");
 }
 
 /* 连续采样 */
 void TSnWork::writeMT_TS5()
 {
-    for(int i = 0; i < goHeaderWFEM.uiSampleLength; i++)
+    quint64 uiSamplingTimeLength = goHeaderWFEM.uiDataCnt/goHeaderWFEM.uiFS;
+
+    for(quint64 i = 0; i < uiSamplingTimeLength; i++)
     {
-        /* 更新记录头的时间，写记录头 */
-        PHOENIX_HEADER oHeaderNew = PublicFunction::getHeaderFromAddSecs(goHeaderPhoenix, i);
-
         /* 朝TSn文件中写phoenix 的 Header */
-        this->writeHeader(oHeaderNew);
-
-        this->writeScan(goHeaderPhoenix.uiSampleCntPerRecordPerCh);
+        this->writeHeader();
+        this->writeScan( goHeaderWFEM.uiFS );
+        this->updateHeadPhoenix(1);
 
         emit sigMsg(MSG_Normal, QString("MT TS5 连续采样\u058E%1/%2(写入记录数/总记录数)")
                     .arg(i+1)
-                    .arg(goHeaderWFEM.uiSampleLength));
+                    .arg(uiSamplingTimeLength));
     }
 
     fclose(pFile);
@@ -420,23 +429,23 @@ void TSnWork::writeMT_TS5()
 }
 
 /*向二进制文件中写数据，每个数据是24bits */
-void TSnWork::writeNum(double number)
+void TSnWork::writeNum(float number)
 {
     unsigned char high;
     unsigned char middle;
     unsigned char low;
 
-    char buffer[3];
+    unsigned char buffer[3];
 
     unsigned int intNumber;
 
     if(number >= 0)
     {
-        intNumber = int(abs(floor(number)));
+        intNumber = int(std::abs(floor(number)));
     }
     else
     {
-        intNumber = ~int(abs(floor(number))) + 1;
+        intNumber = ~int(std::abs(floor(number))) + 1;
     }
 
     high   = intNumber/65536;
@@ -451,13 +460,8 @@ void TSnWork::writeNum(double number)
 }
 
 /* 转换函数 */
-void TSnWork::convert(AMTorMT eAMTorMT, TSn eTSn, quint32 uiSlicBase, quint32 uiSlicSample)
+void TSnWork::convert(AMTorMT eAMTorMT, TSn eTSn, quint32 uiHSMP, quint32 uiLXNS)
 {
-    goHeaderWFEM.uiSlicBase = uiSlicBase;
-    goHeaderWFEM.uiSliceSample = uiSlicSample;
-
-    qDebugV0()<<"Convert Thread ID:"<<QThread::currentThreadId();
-
     /* 凤凰格式的文件 */
     QFileInfo oFileInfo(oStrFileNamePhoenix);
 
@@ -500,7 +504,7 @@ void TSnWork::convert(AMTorMT eAMTorMT, TSn eTSn, quint32 uiSlicBase, quint32 ui
                 .arg(goHeaderWFEM.uiFS)
                 .arg(goHeaderWFEM.uiSlicBase)
                 .arg(uiSlotCnt)
-                .arg(uiSlicSample));
+                .arg(uiLXNS));
 
     qDebugV0()<<"test:"<<QString("方法：%1,TSn：%2")
                 .arg(eAMTorMT)
@@ -510,10 +514,10 @@ void TSnWork::convert(AMTorMT eAMTorMT, TSn eTSn, quint32 uiSlicBase, quint32 ui
     case AMT:
         switch (eTSn) {
         case TS2:
-            this->writeAMT_TS2(uiSlotCnt);
+            this->writeAMT_TS2(uiHSMP, uiLXNS);
             break;
         case TS3:
-            this->writeAMT_TS3(uiSlotCnt);
+            this->writeAMT_TS3(uiHSMP, uiLXNS);
             break;
         case TS4:
             this->writeAMT_TS4();
@@ -521,16 +525,15 @@ void TSnWork::convert(AMTorMT eAMTorMT, TSn eTSn, quint32 uiSlicBase, quint32 ui
         default:
             break;
         }
-
         break;
 
     case MT:
         switch (eTSn) {
         case TS3:
-            this->writeMT_TS3(uiSlotCnt);
+            this->writeMT_TS3(uiHSMP, uiLXNS);
             break;
         case TS4:
-            this->writeMT_TS4(uiSlotCnt);
+            this->writeMT_TS4(uiHSMP, uiLXNS);
             break;
         case TS5:
             this->writeMT_TS5();
@@ -539,10 +542,34 @@ void TSnWork::convert(AMTorMT eAMTorMT, TSn eTSn, quint32 uiSlicBase, quint32 ui
             break;
         }
         break;
-
-    default:
-        break;
     }
 
     this->closeFile();
+}
+
+
+/* 更新哈时间 */
+void TSnWork::updateHeadPhoenix(quint64 uiSecs)
+{
+    QDateTime oDateTimeOld = PublicFunction::getDateTimeFromHeaderPhoenix(goHeadPhoenix);
+
+    QDateTime oDateTime = oDateTimeOld.addSecs(uiSecs);
+
+    QTime oTime = oDateTime.time();
+    QDate oDate = oDateTime.date();
+
+    goHeadPhoenix.uiSec = oTime.second();
+    goHeadPhoenix.uiMin = oTime.minute();
+    goHeadPhoenix.uiHour = oTime.hour();
+
+    goHeadPhoenix.uiDay = oDate.day();
+    goHeadPhoenix.uiMonth = oDate.month();
+    goHeadPhoenix.uiDayOfWeek = oDate.dayOfWeek();
+
+    int iYear = oDate.year();
+
+    goHeadPhoenix.uiYear = iYear%100;
+    goHeadPhoenix.uiCentury = iYear/100+1;
+
+    emit sigMsg(MSG_Normal, QString("时间秒：累加%1s").arg(uiSecs));
 }

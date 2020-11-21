@@ -25,7 +25,7 @@ public:
     ~MainWindow();
 
 private slots:
-    void slotWFEM_HEADER(WFEM_HEADER oWfemHeader);
+    void slotHEAD_WFEM(HEAD_WFEM oHeadWFEM);
 
     void updateMsg(MSG_TYPE eType, QString oStrMsg);
 
@@ -44,7 +44,6 @@ private:
 
     TSnWork *poTSnWork;
 
-
     QMap<quint8, QString> mapMethod;
     QMap<quint8, QString> mapChopSW;
     QMap<quint8, QString> mapV2M;
@@ -59,7 +58,7 @@ private:
     void LastDirWrite(QString oStrFileName);
 
 signals:
-    void sigParameter(AMTorMT eAMTorMT, TSn eTSn, quint32 uiSlicBase, quint32 uiSlicSample);
+    void sigParameter(AMTorMT eAMTorMT, TSn eTSn, quint32 uiHSMP, quint32 uiLXNS);
 };
 
 #endif // MAINWINDOW_H

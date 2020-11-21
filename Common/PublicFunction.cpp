@@ -6,9 +6,9 @@ PublicFunction::PublicFunction()
 }
 
 /* 由首行string解析出首行信息，塞进结构体 */
-WFEM_HEADER PublicFunction::pickHeader(QString oStrPreheader)
+HEAD_WFEM PublicFunction::pickHeader(QString oStrPreheader)
 {
-    WFEM_HEADER oHeader;
+    HEAD_WFEM oHeader;
 
     oHeader.uiDataCnt = oStrPreheader.section(',', WFEM_DATA_CNT, WFEM_DATA_CNT).trimmed().toULongLong();
 
@@ -19,7 +19,7 @@ WFEM_HEADER PublicFunction::pickHeader(QString oStrPreheader)
     oHeader.oStrSiteId = oStrPreheader.section(',', WFEM_SITE, WFEM_SITE).trimmed();
     oHeader.uiSiteDistance = oStrPreheader.section(',', WFEM_SITE_DIST, WFEM_SITE_DIST).trimmed().toUInt();
 
-    oHeader.uiDevId = 9999;// oStrPreheader.section(',', WFEM_DEV, WFEM_DEV).trimmed().toUInt();
+    oHeader.uiDevId = oStrPreheader.section(',', WFEM_DEV, WFEM_DEV).trimmed().toUInt();
     oHeader.uiDevCh = oStrPreheader.section(',', WFEM_CH, WFEM_CH).trimmed().toUInt();
     oHeader.uiV2M = oStrPreheader.section(',', WFEM_V2M, WFEM_V2M).trimmed().toUInt();
 
@@ -40,9 +40,8 @@ WFEM_HEADER PublicFunction::pickHeader(QString oStrPreheader)
 
     /* 开始时间、采样时长、采样率 */
     oHeader.uiStartTime = oStrPreheader.section(',', WFEM_START_TIME,WFEM_START_TIME).trimmed().toULongLong()- 8*3600;
-    oHeader.uiSampleLength = oStrPreheader.section(',', WFEM_SAMP_TIME, WFEM_SAMP_TIME).trimmed().toULongLong();
     oHeader.uiFS = oStrPreheader.section(',', WFEM_SAMP_RATE, WFEM_SAMP_RATE).trimmed().toULongLong();
-
+    oHeader.uiSampleLength =  oHeader.uiDataCnt/oHeader.uiFS;//oStrPreheader.section(',', WFEM_SAMP_TIME, WFEM_SAMP_TIME).trimmed().toULongLong();
 
     oHeader.uiPB_Type = oStrPreheader.section(',', WFEM_PB_TYPE, WFEM_PB_TYPE).trimmed().toULongLong();
 
@@ -72,14 +71,14 @@ QDateTime PublicFunction::getDateTimeFromUTC(uint uiSecs)
     QDateTime oDateTime;
 
     oDateTime = QDateTime::fromTime_t(uiSecs);
-    qDebugV0()<<uiSecs<<oDateTime.toString("yyyy/MM/dd hh:mm:ss");
 
     return oDateTime;
 }
 
-double PublicFunction::getNumber(QString oStrLine)
+/* 从String，获取到浮点数 */
+float PublicFunction::getNumber(QString oStrLine)
 {
-    double dData = 0;
+    float fData = 0;
 
     oStrLine.remove("\n");
 
@@ -92,20 +91,18 @@ double PublicFunction::getNumber(QString oStrLine)
 
     QString oStrData = aoStrLine.first();
 
-    dData = oStrData.toDouble();
+    fData = oStrData.toFloat();
 
-    return dData;
+    return fData;
 }
 
 /* 从凤凰Header中获取到时间 */
-QDateTime PublicFunction::getDateTimeFromHeaderPhoenix(PHOENIX_HEADER oHeader)
+QDateTime PublicFunction::getDateTimeFromHeaderPhoenix(HEAD_PHOENIX oHeader)
 {
     QDateTime oDateTime;
 
     QTime oTime;
     QDate oDate;
-
-    qDebugV0()<<oHeader.uiHour<<oHeader.uiMin<<oHeader.uiSec;
 
     oTime.setHMS( oHeader.uiHour, oHeader.uiMin, oHeader.uiSec);
 
@@ -118,10 +115,9 @@ QDateTime PublicFunction::getDateTimeFromHeaderPhoenix(PHOENIX_HEADER oHeader)
 }
 
 /* 更新哈时间 */
-PHOENIX_HEADER PublicFunction::getHeaderFromAddSecs(PHOENIX_HEADER oHeader, quint64 uiSecs)
+HEAD_PHOENIX PublicFunction::getHeaderFromAddSecs(HEAD_PHOENIX oHeader, quint64 uiSecs)
 {
     QDateTime oDateTimeOld = getDateTimeFromHeaderPhoenix(oHeader);
-    qDebugV0()<<uiSecs<<oDateTimeOld.toString("yyyy/MM/dd HH:mm:ss");
 
     QDateTime oDateTime = oDateTimeOld.addSecs(uiSecs);
 
@@ -145,9 +141,9 @@ PHOENIX_HEADER PublicFunction::getHeaderFromAddSecs(PHOENIX_HEADER oHeader, quin
 }
 
 /* 由已知的广域时间域文件的首行信息来完善凤凰的header */
-PHOENIX_HEADER PublicFunction::getHeaderFromHeaderWFEM(WFEM_HEADER oHeader)
+HEAD_PHOENIX PublicFunction::getHeaderFromHeaderWFEM(HEAD_WFEM oHeader)
 {
-    PHOENIX_HEADER oHeaderPhoenix;
+    HEAD_PHOENIX oHeaderPhoenix;
 
     /* 时间,已验证过，确实可行 */
     QDateTime oDateTime = QDateTime::fromTime_t(oHeader.uiStartTime);
@@ -168,7 +164,7 @@ PHOENIX_HEADER PublicFunction::getHeaderFromHeaderWFEM(WFEM_HEADER oHeader)
     oHeaderPhoenix.uiYear    = iYear%100;
     oHeaderPhoenix.uiCentury = iYear/100+1;
 
-
+    /* 设备编号 */
     oHeaderPhoenix.uiDevSN = oHeader.uiDevId;
     oHeaderPhoenix.uiSampleCntPerRecordPerCh = oHeader.uiFS;
     oHeaderPhoenix.uiChCntPerScan = CH_CNT;
@@ -194,9 +190,9 @@ PHOENIX_HEADER PublicFunction::getHeaderFromHeaderWFEM(WFEM_HEADER oHeader)
 }
 
 /* 读广域时间域文件首行，得到首行信息，塞进结构体中 */
-WFEM_HEADER PublicFunction::getHeaderFromFileName(QString oStrFileName)
+HEAD_WFEM PublicFunction::getHeaderFromFileName(QString oStrFileName)
 {
-    WFEM_HEADER oHeader;
+    HEAD_WFEM oHeader;
 
     QString oStrPreheader;
     oStrPreheader.clear();

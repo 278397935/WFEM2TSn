@@ -245,7 +245,7 @@ void TSnWork::writeAMT_TS2(quint32 uiHSMP, quint32 uiL2NS)
 
             this->updateHeadPhoenix( 1 );
 
-            emit sigMsg(MSG_Normal, QString("AMT TS2 间隔采样，记录: %1/%2\u058E片段: %3/%4 \n")
+            emit sigMsg(MSG_Normal, QString("AMT TS2 间隔采样，\u058E记录：%1/%2\u058E片段：%3/%4 \n")
                         .arg(j+1)
                         .arg(uiL2NS)
                         .arg(i+1)
@@ -288,7 +288,7 @@ void TSnWork::writeAMT_TS3(quint32 uiHSMP, quint32 uiL3NS)
 
             this->updateHeadPhoenix( 1 );
 
-            emit sigMsg(MSG_Normal, QString("AMT TS3 间隔采样，记录：%1/%2\u058E片段: %3/%4 \n")
+            emit sigMsg(MSG_Normal, QString("AMT TS3 间隔采样，\u058E记录：%1/%2\u058E片段：%3/%4 \n")
                         .arg(j+1)
                         .arg(uiL3NS)
                         .arg(i+1)
@@ -351,7 +351,7 @@ void TSnWork::writeMT_TS3(quint32 uiHSMP, quint32 uiL3NS)
             this->writeScan( goHeaderWFEM.uiFS );
             this->updateHeadPhoenix( 1 );
 
-            emit sigMsg(MSG_Normal, QString("MT TS3 间隔采样，记录： %1/%2\u058E片段: %3/%4\n")
+            emit sigMsg(MSG_Normal, QString("MT TS3 间隔采样，\u058E记录：%1/%2\u058E片段：%3/%4\n")
                         .arg(j+1)
                         .arg(uiL3NS)
                         .arg(i+1)
@@ -391,7 +391,7 @@ void TSnWork::writeMT_TS4(quint32 uiHSMP, quint32 uiL4NS)
             this->writeScan( goHeaderWFEM.uiFS );
             this->updateHeadPhoenix( 1 );
 
-            emit sigMsg(MSG_Normal, QString("AMT TS2 间隔采样，记录： %1/%2\u058E片段：%1/%2\n")
+            emit sigMsg(MSG_Normal, QString("AMT TS4 间隔采样，\u058E记录：%1/%2\u058E片段：%1/%2\n")
                         .arg(j+1)
                         .arg(uiL4NS)
                         .arg(i+1)
@@ -476,7 +476,7 @@ void TSnWork::convert(AMTorMT eAMTorMT, TSn eTSn, quint32 uiHSMP, quint32 uiLXNS
     QByteArray ba = oStrFileName.toLatin1();
     poFileName = ba.data();
 
-    pFile = fopen( poFileName, "ab+" );
+    pFile = fopen( poFileName, "wb" );
 
     if(pFile == nullptr)
     {

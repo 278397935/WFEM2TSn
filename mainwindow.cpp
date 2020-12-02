@@ -187,7 +187,7 @@ void MainWindow::slotHEAD_WFEM(HEAD_WFEM oHeadWFEM)
                              "维度：%17\n"
                              "开始采样时刻：%18 "+oStrDateTime+"\n"
                                                         "采样时长:%19\n"
-                                                        "采样率：%20Hz\n"
+                                                        "采样率：%20sps\n"
                                                         "高低频板：%21\n"
                                                         "采样名：%22\n"
                                                         "频率波形(传统CS采集)：%23\n"

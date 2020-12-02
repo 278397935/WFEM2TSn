@@ -49,10 +49,10 @@ public:
     void writeMT_TS5();
 
     /*向二进制文件中写数据，每个数据是24bits */
-    void writeNum(float number);
+    void writeNum(float value);
 
     /* 原有的Phoenix header 追加秒数，的得到新的header */
-    void updateHeadPhoenix(quint64 uiSecs);
+    void updateTime(quint64 uiSecs);
 
 private:
     /* 通道&&文件名 对应上别弄混淆了 */

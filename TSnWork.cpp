@@ -19,7 +19,8 @@ TSnWork::TSnWork(QObject *parent) : QObject(parent)
 /* 生成 5 个文件，广域时间域文件 */
 void TSnWork::openFiles()
 {
-    /* Ex */
+    /* Ex */qDebugV0()<<mapChFile.value(CH_Ex);
+
     oFileEx.setFileName(mapChFile.value(CH_Ex));
     oStreamEx.setDevice(&oFileEx);
     if(!oFileEx.open(QIODevice::ReadOnly | QIODevice::Text)){
@@ -243,7 +244,7 @@ void TSnWork::writeAMT_TS2(quint32 uiHSMP, quint32 uiL2NS)
             this->writeScan( goHeaderWFEM.uiFS/10 );
             this->skipRows( goHeaderWFEM.uiFS - goHeaderWFEM.uiFS/10 );
 
-            this->updateHeadPhoenix( 1 );
+            this->updateTime( 1 );
 
             emit sigMsg(MSG_Normal, QString("AMT TS2 间隔采样，\u058E记录：%1/%2\u058E片段：%3/%4 \n")
                         .arg(j+1)
@@ -252,7 +253,7 @@ void TSnWork::writeAMT_TS2(quint32 uiHSMP, quint32 uiL2NS)
                         .arg(uiSlicCnt));
         }
         this->skipRows( goHeaderWFEM.uiFS*uiSkipSecs );
-        this->updateHeadPhoenix( uiAddSecs );
+        this->updateTime( uiAddSecs );
     }
 
     fflush(pFile);
@@ -286,7 +287,7 @@ void TSnWork::writeAMT_TS3(quint32 uiHSMP, quint32 uiL3NS)
 
             this->writeScan( goHeaderWFEM.uiFS );
 
-            this->updateHeadPhoenix( 1 );
+            this->updateTime( 1 );
 
             emit sigMsg(MSG_Normal, QString("AMT TS3 间隔采样，\u058E记录：%1/%2\u058E片段：%3/%4 \n")
                         .arg(j+1)
@@ -295,7 +296,7 @@ void TSnWork::writeAMT_TS3(quint32 uiHSMP, quint32 uiL3NS)
                         .arg(uiSlicCnt));
         }
         this->skipRows( goHeaderWFEM.uiFS*uiSkipSecs );
-        this->updateHeadPhoenix( uiAddSecs );
+        this->updateTime( uiAddSecs );
     }
 
     fclose(pFile);
@@ -308,13 +309,15 @@ void TSnWork::writeAMT_TS4()
 {
     quint64 uiSamplingTimeLength = goHeaderWFEM.uiDataCnt/goHeaderWFEM.uiFS;
 
+    qDebugV0()<<uiSamplingTimeLength<< goHeaderWFEM.uiDataCnt<<goHeaderWFEM.uiFS;
+
     for(quint64 i = 0; i < uiSamplingTimeLength; i++)
     {
         /* 朝TSn文件中写phoenix 的 Header */
         this->writeHeader();
 
         this->writeScan( goHeaderWFEM.uiFS );
-        this->updateHeadPhoenix(1);
+        this->updateTime(1);
 
         emit sigMsg(MSG_Normal, QString("AMT TS4 连续采样\u058E%1/%2(写入记录数/总记录数)")
                     .arg(i+1)
@@ -349,7 +352,7 @@ void TSnWork::writeMT_TS3(quint32 uiHSMP, quint32 uiL3NS)
         {
             this->writeHeader();
             this->writeScan( goHeaderWFEM.uiFS );
-            this->updateHeadPhoenix( 1 );
+            this->updateTime( 1 );
 
             emit sigMsg(MSG_Normal, QString("MT TS3 间隔采样，\u058E记录：%1/%2\u058E片段：%3/%4\n")
                         .arg(j+1)
@@ -358,7 +361,7 @@ void TSnWork::writeMT_TS3(quint32 uiHSMP, quint32 uiL3NS)
                         .arg(uiSlicCnt));
         }
         this->skipRows( goHeaderWFEM.uiFS*uiSkipSecs );
-        this->updateHeadPhoenix( uiAddSecs );
+        this->updateTime( uiAddSecs );
     }
 
     fclose(pFile);
@@ -389,7 +392,7 @@ void TSnWork::writeMT_TS4(quint32 uiHSMP, quint32 uiL4NS)
         {
             this->writeHeader();
             this->writeScan( goHeaderWFEM.uiFS );
-            this->updateHeadPhoenix( 1 );
+            this->updateTime( 1 );
 
             emit sigMsg(MSG_Normal, QString("AMT TS4 间隔采样，\u058E记录：%1/%2\u058E片段：%1/%2\n")
                         .arg(j+1)
@@ -398,7 +401,7 @@ void TSnWork::writeMT_TS4(quint32 uiHSMP, quint32 uiL4NS)
                         .arg(uiSlicCnt));
         }
         this->skipRows( goHeaderWFEM.uiFS*uiSkipSecs );
-        this->updateHeadPhoenix( uiAddSecs );
+        this->updateTime( uiAddSecs );
     }
 
     fclose(pFile);
@@ -416,7 +419,7 @@ void TSnWork::writeMT_TS5()
         /* 朝TSn文件中写phoenix 的 Header */
         this->writeHeader();
         this->writeScan( goHeaderWFEM.uiFS );
-        this->updateHeadPhoenix(1);
+        this->updateTime(1);
 
         emit sigMsg(MSG_Normal, QString("MT TS5 连续采样\u058E%1/%2(写入记录数/总记录数)")
                     .arg(i+1)
@@ -429,7 +432,7 @@ void TSnWork::writeMT_TS5()
 }
 
 /*向二进制文件中写数据，每个数据是24bits */
-void TSnWork::writeNum(float number)
+void TSnWork::writeNum(float value)
 {
     unsigned char high;
     unsigned char middle;
@@ -438,6 +441,8 @@ void TSnWork::writeNum(float number)
     unsigned char buffer[3];
 
     unsigned int intNumber;
+
+    float number = value*1000;//微伏
 
     if(number >= 0)
     {
@@ -496,7 +501,7 @@ void TSnWork::convert(AMTorMT eAMTorMT, TSn eTSn, quint32 uiHSMP, quint32 uiLXNS
     quint64 uiSlotCnt = goHeaderWFEM.uiSampleLength/goHeaderWFEM.uiSlicBase;
 
     emit sigMsg(MSG_Normal,QString("采样时长：%1s\n"
-                                   "采样率：%2Hz\n"
+                                   "采样率：%2sps\n"
                                    "片段长度：%3\n"
                                    "片段个数：%4\n"
                                    "记录数：%5\n")
@@ -549,7 +554,7 @@ void TSnWork::convert(AMTorMT eAMTorMT, TSn eTSn, quint32 uiHSMP, quint32 uiLXNS
 
 
 /* 更新哈时间 */
-void TSnWork::updateHeadPhoenix(quint64 uiSecs)
+void TSnWork::updateTime(quint64 uiSecs)
 {
     QDateTime oDateTimeOld = PublicFunction::getDateTimeFromHeaderPhoenix(goHeadPhoenix);
 
